@@ -46,6 +46,14 @@ public class Artist {
         }
     }
 
+    static void updateArtist(Scanner sc) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    static void deleteArtist(Scanner sc) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     private Artist() {
     }
 }

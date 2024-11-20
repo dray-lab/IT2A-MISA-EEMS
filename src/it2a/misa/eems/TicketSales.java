@@ -33,4 +33,16 @@ public class TicketSales {
             System.out.println("Error adding ticket sales: " + e.getMessage());
         }
     }
+
+    static void viewTicketSales() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    static void updateTicketSales(Scanner sc) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    static void deleteTicketSales(Scanner sc) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
