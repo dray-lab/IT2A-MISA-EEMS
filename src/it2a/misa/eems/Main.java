@@ -48,7 +48,7 @@ public class Main {
             System.out.println("5. Return to Main Menu");
             System.out.print("Enter choice: ");
             int choice = sc.nextInt();
-            sc.nextLine();  // Clear newline
+            sc.nextLine(); 
 
             switch (choice) {
                 case 1:
@@ -82,7 +82,7 @@ public class Main {
             System.out.println("5. Return to Main Menu");
             System.out.print("Enter choice: ");
             int choice = sc.nextInt();
-            sc.nextLine();  // Clear newline
+            sc.nextLine();  
 
             switch (choice) {
                 case 1:
@@ -116,7 +116,7 @@ public class Main {
             System.out.println("5. Return to Main Menu");
             System.out.print("Enter choice: ");
             int choice = sc.nextInt();
-            sc.nextLine();  // Clear newline
+            sc.nextLine();  
 
             switch (choice) {
                 case 1:
