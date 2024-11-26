@@ -67,4 +67,7 @@ public class Config {
             System.out.println("Error executing SQL: " + e.getMessage());
         }
     }
+
+    private Config() {
+    }
 }
