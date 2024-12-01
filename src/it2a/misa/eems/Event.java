@@ -1,10 +1,6 @@
 package it2a.misa.eems;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Scanner;
 
 public class Event {
@@ -24,16 +20,44 @@ public class Event {
         }
 
         private Config() {
+            // Prevent instantiation
+        }
+    }
+
+    // Utility method for validating text inputs (letters and spaces only)
+    private static String getValidatedTextInput(Scanner sc, String prompt, String errorMessage) {
+        String input;
+        while (true) {
+            System.out.print(prompt);
+            input = sc.nextLine();
+            if (input.matches("[a-zA-Z ]+")) { // Only letters and spaces are allowed
+                return input;
+            } else {
+                System.out.println(errorMessage);
+            }
         }
     }
 
     public static void addEvent(Scanner sc) {
-        System.out.print("Event Name: ");
-        String name = sc.nextLine();
-        System.out.print("Event Type (Concert/Theater): ");
-        String type = sc.nextLine();
-        System.out.print("Event Venue: ");
-        String venue = sc.nextLine();
+        // Event Name validation
+        String name = getValidatedTextInput(sc, "Event Name (letters only): ",
+                "Invalid input! Event name must only contain letters and spaces.");
+
+        // Event Type validation (Concert/Theater only)
+        String type;
+        while (true) {
+            System.out.print("Event Type (Concert/Theater): ");
+            type = sc.nextLine();
+            if (type.equalsIgnoreCase("Concert") || type.equalsIgnoreCase("Theater")) {
+                break;
+            } else {
+                System.out.println("Invalid input! Event type must be either 'Concert' or 'Theater'.");
+            }
+        }
+
+        // Event Venue validation
+        String venue = getValidatedTextInput(sc, "Event Venue (letters only): ",
+                "Invalid input! Venue must only contain letters and spaces.");
 
         String sql = "INSERT INTO Event (event_name, event_type, event_venue) VALUES (?, ?, ?)";
 
@@ -54,12 +78,19 @@ public class Event {
         try (Connection con = Config.connectDB();
              PreparedStatement pst = con.prepareStatement(sql);
              ResultSet rs = pst.executeQuery()) {
-            System.out.println("Event List:");
+
+            System.out.println("-------------------------------------------------------------");
+            System.out.printf("| %-3s | %-20s | %-15s | %-15s |%n", "ID", "Name", "Type", "Venue");
+            System.out.println("-------------------------------------------------------------");
+
             while (rs.next()) {
-                System.out.printf("ID: %d, Name: %s, Type: %s, Venue: %s%n",
-                        rs.getInt("event_id"), rs.getString("event_name"),
-                        rs.getString("event_type"), rs.getString("event_venue"));
+                System.out.printf("| %-3d | %-20s | %-15s | %-15s |%n",
+                        rs.getInt("event_id"),
+                        rs.getString("event_name"),
+                        rs.getString("event_type"),
+                        rs.getString("event_venue"));
             }
+            System.out.println("-------------------------------------------------------------");
         } catch (SQLException e) {
             System.out.println("Error viewing events: " + e.getMessage());
         }
@@ -68,13 +99,27 @@ public class Event {
     public static void updateEvent(Scanner sc) {
         System.out.print("Enter Event ID to update: ");
         int eventId = sc.nextInt();
-        sc.nextLine(); 
-        System.out.print("New Event Name: ");
-        String newName = sc.nextLine();
-        System.out.print("New Event Type: ");
-        String newType = sc.nextLine();
-        System.out.print("New Event Venue: ");
-        String newVenue = sc.nextLine();
+        sc.nextLine(); // Consume the leftover newline
+
+        // New Event Name validation
+        String newName = getValidatedTextInput(sc, "New Event Name (letters only): ",
+                "Invalid input! Event name must only contain letters and spaces.");
+
+        // New Event Type validation
+        String newType;
+        while (true) {
+            System.out.print("New Event Type (Concert/Theater): ");
+            newType = sc.nextLine();
+            if (newType.equalsIgnoreCase("Concert") || newType.equalsIgnoreCase("Theater")) {
+                break;
+            } else {
+                System.out.println("Invalid input! Event type must be either 'Concert' or 'Theater'.");
+            }
+        }
+
+        // New Event Venue validation
+        String newVenue = getValidatedTextInput(sc, "New Event Venue (letters only): ",
+                "Invalid input! Venue must only contain letters and spaces.");
 
         String sql = "UPDATE Event SET event_name = ?, event_type = ?, event_venue = ? WHERE event_id = ?";
 

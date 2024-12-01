@@ -52,7 +52,7 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    Event.addEvent(sc);
+                    Event.addEvent(sc);                       
                     break;
                 case 2:
                     Event.viewEvents();

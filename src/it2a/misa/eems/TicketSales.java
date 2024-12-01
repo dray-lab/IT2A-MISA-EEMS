@@ -1,10 +1,6 @@
 package it2a.misa.eems;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Scanner;
 
 public class TicketSales {
@@ -24,18 +20,18 @@ public class TicketSales {
         }
 
         private Config() {
+            // Prevent instantiation
         }
     }
 
     public static void addTicketSales(Scanner sc) {
         System.out.print("Event ID: ");
         int eventId = sc.nextInt();
-        System.out.print("Silver Tickets Sold: ");
-        int silver = sc.nextInt();
-        System.out.print("Gold Tickets Sold: ");
-        int gold = sc.nextInt();
-        System.out.print("VIP Tickets Sold: ");
-        int vip = sc.nextInt();
+
+        // Validate ticket quantities for each category
+        int silver = validateNonNegativeInput(sc, "Silver Tickets Sold");
+        int gold = validateNonNegativeInput(sc, "Gold Tickets Sold");
+        int vip = validateNonNegativeInput(sc, "VIP Tickets Sold");
 
         String sql = "INSERT INTO TicketSales (event_id, silver_tickets, gold_tickets, vip_tickets) VALUES (?, ?, ?, ?)";
 
@@ -57,12 +53,20 @@ public class TicketSales {
         try (Connection con = Config.connectDB();
              PreparedStatement pst = con.prepareStatement(sql);
              ResultSet rs = pst.executeQuery()) {
-            System.out.println("Ticket Sales List:");
+
+            System.out.println("----------------------------------------------------------------------------------");
+            System.out.printf("| %-5s | %-8s | %-15s | %-15s | %-15s |%n", "ID", "Event ID", "Silver Tickets", "Gold Tickets", "VIP Tickets");
+            System.out.println("----------------------------------------------------------------------------------");
+
             while (rs.next()) {
-                System.out.printf("ID: %d, Event ID: %d, Silver: %d, Gold: %d, VIP: %d%n",
-                        rs.getInt("sale_id"), rs.getInt("event_id"),
-                        rs.getInt("silver_tickets"), rs.getInt("gold_tickets"), rs.getInt("vip_tickets"));
+                System.out.printf("| %-5d | %-8d | %-15d | %-15d | %-15d |%n",
+                        rs.getInt("sale_id"),  // sale_id column
+                        rs.getInt("event_id"),
+                        rs.getInt("silver_tickets"),
+                        rs.getInt("gold_tickets"),
+                        rs.getInt("vip_tickets"));
             }
+            System.out.println("----------------------------------------------------------------------------------");
         } catch (SQLException e) {
             System.out.println("Error viewing ticket sales: " + e.getMessage());
         }
@@ -71,12 +75,11 @@ public class TicketSales {
     public static void updateTicketSales(Scanner sc) {
         System.out.print("Enter Sale ID to update: ");
         int saleId = sc.nextInt();
-        System.out.print("New Silver Tickets Sold: ");
-        int silver = sc.nextInt();
-        System.out.print("New Gold Tickets Sold: ");
-        int gold = sc.nextInt();
-        System.out.print("New VIP Tickets Sold: ");
-        int vip = sc.nextInt();
+
+        // Validate ticket quantities for each category
+        int silver = validateNonNegativeInput(sc, "New Silver Tickets Sold");
+        int gold = validateNonNegativeInput(sc, "New Gold Tickets Sold");
+        int vip = validateNonNegativeInput(sc, "New VIP Tickets Sold");
 
         String sql = "UPDATE TicketSales SET silver_tickets = ?, gold_tickets = ?, vip_tickets = ? WHERE sale_id = ?";
 
@@ -117,6 +120,22 @@ public class TicketSales {
         }
     }
 
+    // Helper method to validate non-negative input
+    private static int validateNonNegativeInput(Scanner sc, String prompt) {
+        int value;
+        while (true) {
+            System.out.print(prompt + ": ");
+            value = sc.nextInt();
+            if (value >= 0) {
+                break;
+            } else {
+                System.out.println("Invalid input! Value must be a non-negative number.");
+            }
+        }
+        return value;
+    }
+
     private TicketSales() {
+        // Prevent instantiation
     }
 }
